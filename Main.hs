@@ -40,7 +40,8 @@ riddleB = todo
 
 -- Implement the function `myLength`. It returns the length of a list:
 myLength :: [a] -> Int
-myLength = todo
+myLength [] = 0
+myLength (_:xs) = 1 + myLength xs 
 
 myLengthSpec :: Spec
 myLengthSpec =
@@ -51,7 +52,8 @@ myLengthSpec =
 
 -- Implement the function myReverse. It reverses a list:
 myReverse :: [a] -> [a]
-myReverse = todo
+myReverse [] = []
+myReverse (x:xs) = myReverse xs ++ [x]
 
 myReverseSpec :: Spec
 myReverseSpec =
@@ -63,7 +65,10 @@ myReverseSpec =
 -- Implement the function drop. It drops the first n elements.
 -- It returns the list unchanged for negative n.
 myDrop :: Int -> [a] -> [a]
-myDrop = todo
+myDrop n xs
+  | n <= 0      = xs
+myDrop _ []     = []
+myDrop n (_:xs) = myDrop (n - 1) xs
 
 myDropSpec :: Spec
 myDropSpec =
@@ -73,6 +78,7 @@ myDropSpec =
     it "myDrop 2 [1,2] == []" $ myDrop 2 [1, 2] `shouldBe` ([] :: [Int])
     it "myDrop 2 [1,2,3] == [3]" $ myDrop 2 [1, 2, 3] `shouldBe` ([3] :: [Int])
     it "myDrop 7 [1,2,3] == []" $ myDrop 7 [1, 2, 3] `shouldBe` ([] :: [Int])
+    it "myDrop -3 [1,2] == [1,2]" $ myDrop (-3) [1, 2] `shouldBe` ([1, 2] :: [Int])
     it "behaves like drop" $ property $ \(n :: Int, l :: [Int]) -> myDrop n l == drop n l
 
 -------------------------------------------------------------------------------
