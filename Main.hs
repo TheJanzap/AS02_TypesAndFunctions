@@ -228,7 +228,8 @@ languages =
 -- Implement your own version of the function `map`.
 -- It applies a function to every element in a list.
 myMap :: (a -> b) -> [a] -> [b]
-myMap = todo
+myMap _ []     = []
+myMap f (x:xs) = f x : myMap f xs 
 
 myMapSpec :: Spec
 myMapSpec =
@@ -239,7 +240,9 @@ myMapSpec =
 -- Implement your own version of the function `filter`.
 -- It keeps only the elements which satisfy the predicate.
 myFilter :: (a -> Bool) -> [a] -> [a]
-myFilter = todo
+myFilter _ [] = []
+myFilter f (x:xs) | f x       = x : myFilter f xs
+                  | otherwise = myFilter f xs 
 
 myFilterSpec :: Spec
 myFilterSpec =
@@ -250,7 +253,7 @@ myFilterSpec =
 -- Implement the function `squares`. It squares every element in a list.
 -- Make use of the predefined function `map`:
 squares :: [Int] -> [Int]
-squares = todo
+squares xs = map (\x -> x * x) xs 
 
 squaresSpec :: Spec
 squaresSpec =
@@ -261,7 +264,7 @@ squaresSpec =
 -- Implement the function `names`. It extracts the names of the languages.
 -- Make use of the predefined function `map`:
 names :: [Language] -> [String]
-names = todo
+names ls = map (\l -> name l) ls
 
 namesSpec :: Spec
 namesSpec =
@@ -272,7 +275,7 @@ namesSpec =
 -- Implement the function `evens`. It keeps only the even values of a list.
 -- Use the function `filter` and the `even` function:
 evens :: [Int] -> [Int]
-evens = todo
+evens xs = filter even xs
 
 evensSpec :: Spec
 evensSpec =
@@ -283,7 +286,7 @@ evensSpec =
 -- Implement the function `likes`. It keeps only the functional languages:
 -- Use the function `filter` and write the predicate as a lambda expression:
 likes :: [Language] -> [Language]
-likes = todo
+likes ls = filter (\l -> (paradigm l) == Functional) ls
 
 likesSpec :: Spec
 likesSpec =
@@ -294,8 +297,12 @@ likesSpec =
 
 -- Implement the function `foldrLength`. It computes the lengths of a list.
 -- Use the function `foldr`:
+-- (a -> b -> b): a = list element, b: accumulator, previous value. The function modifies the accumulator and returns it.
+-- -> b: Initial value of the accumulator
+-- -> t a: List element (must be a `Foldable` structure)
+-- -> b: Returns the final value of the accumulator
 foldrLength :: [a] -> Int
-foldrLength = todo
+foldrLength xs = foldr (\_ acc -> acc + 1) 0 xs
 
 foldrLengthSpec :: Spec
 foldrLengthSpec =
@@ -304,8 +311,9 @@ foldrLengthSpec =
 
 -- Implement the function `foldrMap`. It has the same behavior like `map`.
 -- Use the function `foldr`:
+-- a: current list element, xs': already processed list elements
 foldrMap :: (a -> b) -> [a] -> [b]
-foldrMap = todo
+foldrMap f xs = foldr (\a xs' -> f a : xs') [] xs
 
 foldrMapSpec :: Spec
 foldrMapSpec =
