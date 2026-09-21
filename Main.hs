@@ -89,6 +89,11 @@ data Bin a = Leaf a | Fork (Bin a) a (Bin a) deriving (Eq, Show)
 
 -- Example tree with Chars as elements.
 -- It may help to draw it on paper.
+--     d
+--    / \
+--   f   b
+--  / \ / \
+-- g  e a  c
 exTree :: Bin Char
 exTree =
   Fork
@@ -106,7 +111,8 @@ exTree =
 
 -- Implement the function preorder. It traverses a binary tree pre-order:
 preorder :: Bin a -> [a]
-preorder = todo
+preorder (Leaf value) = [value]
+preorder (Fork left value right) = [value] ++ preorder left ++ preorder right
 
 preorderSpec :: Spec
 preorderSpec =
@@ -117,7 +123,8 @@ preorderSpec =
 
 -- Implement the function inorder. It traverses a binary tree in-order:
 inorder :: Bin a -> [a]
-inorder = todo
+inorder (Leaf value) = [value]
+inorder (Fork left value right) = inorder left ++ [value] ++ inorder right
 
 inorderSpec :: Spec
 inorderSpec =
@@ -128,7 +135,8 @@ inorderSpec =
 
 -- Implement the function postorder. It traverses a binary tree post-order:
 postorder :: Bin a -> [a]
-postorder = todo
+postorder (Leaf value) = [value]
+postorder (Fork left value right) = postorder left ++ postorder right ++ [value]
 
 postorderSpec :: Spec
 postorderSpec =
@@ -160,7 +168,9 @@ shorten (n :/: d) = (n `div` f) :/: (d `div` f)
 -- Hint: DIV can easy be implemented by MUL with the reciprocal
 evalOp :: Op -> Rat -> Rat -> Rat
 evalOp ADD (ln :/: ld) (rn :/: rd) = shorten (((ln * rd) + (rn * ld)) :/: (ld * rd))
-evalOp _ _ _ = todo
+evalOp SUB (ln :/: ld) (rn :/: rd) = shorten (((ln * rd) - (rn * ld)) :/: (ld * rd))
+evalOp MUL (ln :/: ld) (rn :/: rd) = shorten ((ln * rn) :/: (ld * rd))
+evalOp DIV l (rn :/: rd) = shorten (evalOp MUL l (rd :/: rn))
 
 evalOpSpec :: Spec
 evalOpSpec =
@@ -172,7 +182,8 @@ evalOpSpec =
 
 -- Now implement the `eval` function, which evaluates an expression:
 eval :: Expr -> Rat
-eval = todo
+eval (Val r) = r
+eval (Bin op l r) = evalOp op (eval l) (eval r)
 
 -- Example expression:
 -- ((1/2) + (1/4)) * ((1/6) / (2/1))
