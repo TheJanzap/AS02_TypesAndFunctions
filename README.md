@@ -22,19 +22,19 @@ Assume `Int` as the type of whole numbers.
 The expressions are becoming increasingly difficult:
 ```
 True :: Bool
-'X' :: ???
-[True, False] :: ???
-fst (True, 1) :: ???
-fst :: ???
-map even [1,2,3] :: ???
-map snd [('a',True), ('b', False)] :: ???
-map snd :: ???
-map head :: ???
-filter snd :: ???
-head . snd :: ???
-fst . (\(e,f,g) -> g) :: ???
-map . map :: ???
-map map :: ???
+'X' :: Char
+[True, False] :: [Bool]
+fst (True, 1) :: Bool -- this is the result of applying the function
+fst :: (a, b) -> a
+map even [1,2,3] :: [Bool] -- returns [False, True, False]
+map snd [('a',True), ('b', False)] :: [Bool]
+map snd :: [(a, b)] -> [b]
+map head :: [[a]] -> [a] -- because map takes a list and head takes a list, the argument is a nested list and the return value a regular list
+filter snd :: [(a, Bool)] -> [(a, Bool)] -- Because filter needs a function that returns bool as the first argument, snd also needs to return bool. The second element in the tuple therefore needs to return bool
+head . snd :: (a, [b]) -> b
+fst . (\(e,f,g) -> g) :: (e, f, (g1, g2)) -> g1 -- g is a tuple that is passed to fst, which takes its first element
+map . map :: (a -> b) -> [[a]] -> [[b]] -- apply map two times: two times nested list
+map map :: [a -> b] -> [[a] -> [b]] -- map is the mapping function: Get a list of `map` with the provided function
 ```
 
 
