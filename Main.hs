@@ -329,20 +329,26 @@ foldrMapSpec =
 -- Implement the "pipe operator" `|>` which allows to combine functions from left to right:
 -- The following should compile when uncommented and evaluate to 5.
 
--- res :: Int
--- res = (fst |> head |> length) (["hallo", "bla"], True)
+res :: Int
+res = (fst |> head |> length) (["hallo", "bla"], True)
 
 -- Hints:
 -- 1. First write down the type signature.
 -- 2. The operator needs to be surrounded by parenthesis in the type signature:
 -- Example: (<+>) :: Int -> Int -> Int
 
--- (|>) TODO
+-- The pipe operator builds a "translator". You have two functions. You input `a` into f1 and want `c` from f2.
+-- The pipe links the output of f1 to the input of f2. 
+(|>) :: (a -> b) -> (b -> c) -> (a -> c)
+(|>) f1 f2 a = f2 (f1 a)
+-- Or with syntactic sugar with the dot operator. 
+-- It is basically already a pipe operator, but its arguments are processed in reverse order:
+-- (|>) first second = sevond . first
 
 -- Implement the function `flip'`.
 -- It takes a function and flips its first two arguments.
 flip' :: (a -> b -> c) -> (b -> a -> c)
-flip' = todo
+flip' f a b = f b a
 
 flip'Spec :: Spec
 flip'Spec =
@@ -351,8 +357,9 @@ flip'Spec =
 
 -- Implement the function `curry'`.
 -- It converts a function which takes a pair to a function which takes the arguments one after another.
+-- f is the function ((a, b) -> c). Then we provide the two arguments a and b as input
 curry' :: ((a, b) -> c) -> (a -> b -> c)
-curry' = todo
+curry' f a b = f (a, b)
 
 curry'Spec :: Spec
 curry'Spec =
@@ -361,8 +368,9 @@ curry'Spec =
 
 -- Implement the function `uncurry' :: (a -> b -> c) -> ((a,b) -> c)`.
 -- It is the inverse of `curry'`: `curry' . uncurry' == id`:
+-- f is the function (a -> b -> c). Then we provide the tuple (a, b) as input.
 uncurry' :: (a -> b -> c) -> ((a, b) -> c)
-uncurry' = todo
+uncurry' f (a, b) = f a b
 
 uncurry'Spec :: Spec
 uncurry'Spec =
