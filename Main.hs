@@ -63,9 +63,12 @@ myLengthSpec =
     it "behaves like length" $ property $ \(l :: [Int]) -> myLength l == myLength l
 
 -- Implement the function myReverse. It reverses a list:
+-- Linear runtime here instead of quadratic with `++`
 myReverse :: [a] -> [a]
-myReverse [] = []
-myReverse (x:xs) = myReverse xs ++ [x]
+myReverse = prepend []
+  where
+    prepend acc [] = acc
+    prepend acc (x:xs) = prepend (x:acc) xs
 
 myReverseSpec :: Spec
 myReverseSpec =
@@ -182,7 +185,7 @@ evalOp :: Op -> Rat -> Rat -> Rat
 evalOp ADD (ln :/: ld) (rn :/: rd) = shorten (((ln * rd) + (rn * ld)) :/: (ld * rd))
 evalOp SUB (ln :/: ld) (rn :/: rd) = shorten (((ln * rd) - (rn * ld)) :/: (ld * rd))
 evalOp MUL (ln :/: ld) (rn :/: rd) = shorten ((ln * rn) :/: (ld * rd))
-evalOp DIV l (rn :/: rd) = shorten (evalOp MUL l (rd :/: rn))
+evalOp DIV l (rn :/: rd) = evalOp MUL l (rd :/: rn)
 
 evalOpSpec :: Spec
 evalOpSpec =
@@ -276,7 +279,7 @@ squaresSpec =
 -- Implement the function `names`. It extracts the names of the languages.
 -- Make use of the predefined function `map`:
 names :: [Language] -> [String]
-names ls = map (\l -> name l) ls
+names ls = map name ls
 
 namesSpec :: Spec
 namesSpec =
@@ -351,8 +354,9 @@ res = (fst |> head |> length) (["hallo", "bla"], True)
 
 -- The pipe operator builds a "translator". You have two functions. You input `a` into f1 and want `c` from f2.
 -- The pipe links the output of f1 to the input of f2. 
+-- Using a lambda here to make it more clear that we return a function, not a value
 (|>) :: (a -> b) -> (b -> c) -> (a -> c)
-(|>) f1 f2 a = f2 (f1 a)
+(|>) f1 f2 = \a -> f2 (f1 a)
 -- Or with syntactic sugar with the dot operator. 
 -- It is basically already a pipe operator, but its arguments are processed in reverse order:
 -- (|>) first second = sevond . first
@@ -360,7 +364,7 @@ res = (fst |> head |> length) (["hallo", "bla"], True)
 -- Implement the function `flip'`.
 -- It takes a function and flips its first two arguments.
 flip' :: (a -> b -> c) -> (b -> a -> c)
-flip' f a b = f b a
+flip' f = \b a -> f a b
 
 flip'Spec :: Spec
 flip'Spec =
@@ -371,7 +375,7 @@ flip'Spec =
 -- It converts a function which takes a pair to a function which takes the arguments one after another.
 -- f is the function ((a, b) -> c). Then we provide the two arguments a and b as input
 curry' :: ((a, b) -> c) -> (a -> b -> c)
-curry' f a b = f (a, b)
+curry' f = \a b -> f (a, b)
 
 curry'Spec :: Spec
 curry'Spec =
@@ -382,7 +386,7 @@ curry'Spec =
 -- It is the inverse of `curry'`: `curry' . uncurry' == id`:
 -- f is the function (a -> b -> c). Then we provide the tuple (a, b) as input.
 uncurry' :: (a -> b -> c) -> ((a, b) -> c)
-uncurry' f (a, b) = f a b
+uncurry' f  = \(a, b) -> f a b
 
 uncurry'Spec :: Spec
 uncurry'Spec =
