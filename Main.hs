@@ -28,11 +28,23 @@ todo = error "TODO"
 -- Implement the two functions with the given types.
 -- There is only one solution each which is a total and terminating.
 -- Follow the types!
+-- f: (a, b) -> c
+-- g: c -> d
+-- tuple: (a, b)
+-- returns: d
+-- `f` takes a tuple so input that. It then returns a `c`.
+-- `g` takes a `c` and outputs a `d`!
 riddleA :: ((a, b) -> c) -> (c -> d) -> (a, b) -> d
-riddleA = todo
+riddleA f g tuple = g (f tuple)
 
+-- val: a
+-- f: (a -> b) -> c
+-- g: a -> a -> b which is a -> (a -> b)
+-- returns: c
+-- `g` takes an `a` and returns a function `(a -> b)`.
+-- f takes that function and returns a `c`!
 riddleB :: a -> ((a -> b) -> c) -> (a -> a -> b) -> c
-riddleB = todo
+riddleB val f g = f (g val)
 
 -------------------------------------------------------------------------------
 -- 1. Recursion on Lists
